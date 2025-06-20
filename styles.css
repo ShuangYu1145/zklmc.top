@@ -143,22 +143,21 @@ header .container {
 .carousel-container {
     display: flex;
     height: 100%;
+    width: max-content;
     position: relative;
-    transition: transform 0.5s ease-in-out;
+    animation: scroll 20s linear infinite;
 }
 
 .carousel-slide {
-    min-width: 100%;
+    width: 350px;
+    min-width: 350px;
     height: 100%;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: white;
     padding: 20px;
-}
-
-.carousel-slide.active {
-    display: flex;
+    margin: 0 15px;
 }
 
 .carousel-slide img {
@@ -167,61 +166,13 @@ header .container {
     object-fit: contain;
 }
 
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    color: var(--text-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    transition: var(--transition);
-    z-index: 2;
-}
-
-.carousel-btn:hover {
-    opacity: 1;
-    background: white;
-}
-
-.carousel-btn.prev {
-    left: 10px;
-}
-
-.carousel-btn.next {
-    right: 10px;
-}
-
-.carousel-indicators {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 2;
-}
-
-.indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.indicator.active {
-    background-color: var(--primary-color);
-    transform: scale(1.2);
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-1900px); /* 5张图片的宽度+间距的总和 */
+    }
 }
 
 /* 特点板块样式 */
@@ -399,6 +350,20 @@ header .container {
     margin-top: 2rem;
 }
 
+.advantage-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-radius: 12px;
+    z-index: -1;
+    transition: var(--transition);
+    opacity: 0;
+}
+
 .advantage-item::before {
     content: '';
     position: absolute;
@@ -409,40 +374,40 @@ header .container {
     background-color: var(--primary-color);
     z-index: -1;
     transition: var(--transition);
+    border-radius: 0 0 0 12px;
 }
 
-.advantage-item:nth-child(1)::before {
+.advantage-item:nth-child(1)::after {
     background-color: var(--success-color);
 }
 
-.advantage-item:nth-child(2)::before {
+.advantage-item:nth-child(2)::after {
     background-color: var(--purple-color);
 }
 
-.advantage-item:nth-child(3)::before {
+.advantage-item:nth-child(3)::after {
     background-color: var(--danger-color);
 }
 
-.advantage-item:nth-child(4)::before {
+.advantage-item:nth-child(4)::after {
     background-color: var(--warning-color);
 }
 
-.advantage-item:nth-child(5)::before {
+.advantage-item:nth-child(5)::after {
     background-color: var(--info-color);
 }
 
-.advantage-item:nth-child(6)::before {
+.advantage-item:nth-child(6)::after {
     background-color: var(--yellow-color);
 }
 
-.advantage-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+.advantage-item:hover::after {
+    opacity: 0.05;
 }
 
 .advantage-item:hover::before {
-    width: 100%;
-    opacity: 0.05;
+    width: 0;
+    opacity: 0;
 }
 
 .icon-container {
@@ -460,6 +425,7 @@ header .container {
     justify-content: center;
     transition: var(--transition);
     z-index: 10;
+    overflow: visible;
 }
 
 .advantage-item:hover .icon-container {
@@ -470,6 +436,8 @@ header .container {
 .icon-container i {
     font-size: 2rem;
     transition: var(--transition);
+    display: block;
+    line-height: 1;
 }
 
 .advantage-item:nth-child(1) .icon-container i {
@@ -512,6 +480,11 @@ header .container {
     position: relative;
     z-index: 2;
     text-align: center;
+}
+
+.advantage-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* 统计数据板块样式 */
@@ -674,6 +647,7 @@ header .container {
 .modal.show {
     display: flex;
     opacity: 1;
+    animation: fadeIn 0.3s ease forwards;
 }
 
 .modal-content {
@@ -685,12 +659,37 @@ header .container {
     text-align: center;
     position: relative;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .modal.show .modal-content {
-    transform: translateY(0);
+    animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalPop {
+    0% {
+        transform: scale(0.8) translateY(50px);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.05) translateY(-10px);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
 }
 
 .close-modal {
